@@ -12,6 +12,7 @@ model User {
   tasks     Task[]
   habits    Habit[]
   sessions  Session[]
+  logs      Log[]
 }
 
 model Item {
