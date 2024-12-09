@@ -1,0 +1,64 @@
+model User {
+  id        Int         @id @default(autoincrement())
+  username  String      @unique
+  email     String      @unique
+  password  String
+  createdAt DateTime    @default(now())
+  gender    Gender
+  role      Role
+  stats     Json?
+  settings  Json?
+  inventory Inventory[]
+  tasks     Task[]
+  habits    Habit[]
+  sessions  Session[]
+}
+
+model Item {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  category    ItemCategory
+  price       Int
+  attributes  Json?
+  inventory   Inventory[]
+}
+
+model Inventory {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  itemId     Int
+  item       Item     @relation(fields: [itemId], references: [id])
+  quantity   Int      @default(1)
+  acquiredAt DateTime @default(now())
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  WARRIOR
+  ARCHER
+  THIEF
+  MAGE
+}
+
+enum ItemCategory {
+  SWORD
+  BOW
+  DAGGER
+  STICK
+
+  HAT
+  ARMOR
+  PANTS
+  BOOTS
+
+  FOOD
+  DRINK
+
+  POTION
+}

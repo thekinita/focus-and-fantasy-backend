@@ -1,0 +1,15 @@
+model Habit {
+  id          Int            @id @default(autoincrement())
+  name        String
+  frequency   HabitFrequency
+  completedAt DateTime[]
+  userId      Int
+  user        User           @relation(fields: [userId], references: [id])
+  createdAt   DateTime       @default(now())
+}
+
+enum HabitFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
