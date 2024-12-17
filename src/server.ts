@@ -1,7 +1,7 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import app from './app'
-import { env } from './env'
+import { env } from './config/env'
 
 const httpServer = createServer(app)
 const PORT = env.PORT
