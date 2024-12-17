@@ -1,0 +1,9 @@
+model Session {
+  id      Int     @id @default(autoincrement())
+  times   Json[]
+  comment String?
+  userId  Int
+  taskId  Int?
+  task    Task?   @relation(fields: [taskId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}

@@ -1,0 +1,85 @@
+model User {
+  id        Int             @id @default(autoincrement())
+  username  String          @unique
+  email     String          @unique
+  password  String
+  createdAt DateTime        @default(now())
+  gender    Gender
+  settings  Json?
+  isAdmin   Boolean         @default(false)
+  habits    Habit[]
+  inventory InventoryItem[]
+  logs      Log[]
+  sessions  Session[]
+  tasks     Task[]
+  token     Token[]
+  stats     UserStats[]
+}
+
+model Item {
+  id          Int             @id @default(autoincrement())
+  name        String
+  description String?
+  category    ItemCategory
+  price       Int
+  attributes  Json?
+  collection  ItemCollection
+  inventory   InventoryItem[]
+}
+
+model InventoryItem {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  itemId     Int
+  quantity   Int      @default(1)
+  isEquiped  Boolean  @default(false)
+  acquiredAt DateTime @default(now())
+  item       Item     @relation(fields: [itemId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model UserStats {
+  id         Int  @id @default(autoincrement())
+  userId     Int
+  level      Int  @default(1)
+  experience Int  @default(0)
+  gold       Int  @default(0)
+  health     Int  @default(100)
+  mana       Int  @default(100)
+  energy     Int  @default(0)
+  damage     Int  @default(10)
+  guard      Int  @default(10)
+  User       User @relation(fields: [userId], references: [id])
+}
+
+model Token {
+  id           Int      @id @default(autoincrement())
+  userId       Int?
+  refreshToken String
+  updatedAt    DateTime @updatedAt
+  User         User?    @relation(fields: [userId], references: [id])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum ItemCategory {
+  SWORD
+  BOW
+  DAGGER
+  STICK
+  HAT
+  ARMOR
+  PANTS
+  BOOTS
+  FOOD
+  DRINK
+  POTION
+}
+
+enum ItemCollection {
+  DEFAULT
+  BEGINNER
+}
