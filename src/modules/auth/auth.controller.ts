@@ -3,11 +3,9 @@ import AuthService from './auth.service'
 import { CreateUserDto } from './auth.dto'
 import { RegisterSchema } from './auth.validation'
 import { ApiError } from '../../exceptions/api-error'
+import { asyncHandler } from './utils/async-handler'
 
 const authRouter = Router()
-const asyncHandler =
-  (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
-    Promise.resolve(fn(req, res, next)).catch(next)
 
 class AuthController {
   static async register(req: Request, res: Response, next: NextFunction) {
