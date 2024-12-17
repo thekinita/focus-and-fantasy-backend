@@ -1,17 +1,19 @@
 import {
-  InventoryItem as InventoryItemPrisma,
-  Log as LogPrisma,
-  User as UserPrisma,
-  UserStats as UserStatsPrisma
+  Habit,
+  InventoryItem,
+  Log,
+  Session,
+  Task,
+  UserStats,
+  User as UserPrisma
 } from '@prisma/client'
 
 export type User = UserPrisma & {
-  stats: UserStatsPrisma[]
-  settings: UserSettings
-  inventory: InventoryItemPrisma[]
-  // tasks: Task[]
-  // habits: Habit[]
-  // sessions: Session[]
-  logs: LogPrisma[]
+  habits: Habit[]
+  inventory: InventoryItem[]
+  logs: Log[]
+  sessions: Session[]
+  tasks: Task[]
+  stats: UserStats[]
 }
 export interface UserSettings {}

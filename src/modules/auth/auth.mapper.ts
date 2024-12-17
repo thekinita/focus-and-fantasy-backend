@@ -2,11 +2,20 @@ import { User } from '../users/users.entity'
 import { CreateUserDto, UserResponseDto } from './auth.dto'
 
 export class UserMapper {
-  static entityToResponseDto(user: UserResponseDto) {
+  static entityToResponseDto(user: User): UserResponseDto {
     return {
+      id: user.id,
       username: user.username,
       email: user.email,
-      gender: user.gender
+      gender: user.gender,
+      settings: user.settings,
+      isAdmin: user.isAdmin,
+      habits: user.habits,
+      inventory: user.inventory,
+      logs: user.logs,
+      sessions: user.sessions,
+      tasks: user.tasks,
+      stats: user.stats
     }
   }
 

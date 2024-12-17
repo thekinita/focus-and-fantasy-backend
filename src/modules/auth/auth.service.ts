@@ -5,6 +5,7 @@ import { getDefaultItems } from '../users/utils/inventory.utils'
 import checkUserExistence from './utils/check-user-existence'
 import createUser from './utils/create-user'
 import TokenService from '../../services/token.service'
+import { User } from '../users/users.entity'
 
 export default class AuthService {
   static async register(userData: CreateUserDto): Promise<UserResponseDto> {
@@ -26,7 +27,7 @@ export default class AuthService {
     await TokenService.saveToken(createdUser.id, tokens.refreshToken)
 
     return {
-      ...UserMapper.entityToResponseDto(createdUser),
+      ...UserMapper.entityToResponseDto(createdUser as User),
       ...tokens
     }
   }
