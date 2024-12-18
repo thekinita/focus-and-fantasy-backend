@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express'
 import AuthService from './auth.service'
 import { CreateUserDto } from './auth.dto'
 import { RegisterSchema } from './auth.validation'
-import { ApiError } from '../../exceptions/api-error'
 import { asyncHandler } from './utils/async-handler'
 
 const authRouter = Router()
@@ -30,12 +29,18 @@ class AuthController {
       res.status(200).json({
         status: 'success',
         data: userData
-        })
+      })
     } catch (error) {
       next(error)
     }
   }
 
+  static async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refreshToken } = req.body
+      await AuthService.logout(refreshToken)
+      res.status(200).json({ status: 'success' })
+    } catch (error) {
       next(error)
     }
   }

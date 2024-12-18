@@ -8,6 +8,7 @@ import TokenService from '../../services/token.service'
 import getUserThroughVerify from './utils/get-user-through-verify'
 import { ApiError } from '../../exceptions/api-error'
 import { User } from '../users/users.entity'
+import prisma from '../../config/prisma'
 
 export default class AuthService {
   static async register(userData: CreateUserDto): Promise<UserResponseDto> {
@@ -49,5 +50,11 @@ export default class AuthService {
       }
     }
     throw ApiError.Unauthorized('Invalid credentials')
+  }
+
+  static async logout(refreshToken: string) {
+    return await prisma.token.delete({
+      where: { refreshToken }
+    })
   }
 }
