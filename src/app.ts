@@ -4,7 +4,6 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import { errorHandler } from './middlewares/error-handler'
 import authRouter from './modules/auth/auth.controller'
-import { env } from './config/env'
 
 dotenv.config()
 

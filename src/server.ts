@@ -27,5 +27,5 @@ io.on('connection', (socket) => {
 })
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`[server] server running on http://localhost:${PORT}`)
 })
