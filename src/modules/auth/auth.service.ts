@@ -5,6 +5,8 @@ import { getDefaultItems } from '../users/utils/inventory.utils'
 import checkUserExistence from './utils/check-user-existence'
 import createUser from './utils/create-user'
 import TokenService from '../../services/token.service'
+import getUserThroughVerify from './utils/get-user-through-verify'
+import { ApiError } from '../../exceptions/api-error'
 import { User } from '../users/users.entity'
 
 export default class AuthService {
@@ -30,5 +32,22 @@ export default class AuthService {
       ...UserMapper.entityToResponseDto(createdUser as User),
       ...tokens
     }
+  }
+
+  static async login(
+    email: string,
+    password: string
+  ): Promise<UserResponseDto & { accessToken: string; refreshToken: string }> {
+    const user = await getUserThroughVerify(email, password)
+    if (user) {
+      const tokens = TokenService.generateTokens(user.id)
+      await TokenService.saveToken(user.id, tokens.refreshToken)
+      return {
+        ...UserMapper.entityToResponseDto(user as User),
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken
+      }
+    }
+    throw ApiError.Unauthorized('Invalid credentials')
   }
 }

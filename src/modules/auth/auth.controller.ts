@@ -19,24 +19,30 @@ class AuthController {
         data: userData
       })
     } catch (error) {
-      if (error instanceof ApiError) {
-        return res.status(error.statusCode).json({
-          status: error.statusCode,
-          message: error.message
+      next(error)
+    }
+  }
+
+  static async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body
+      const userData = await AuthService.login(email, password)
+      res.status(200).json({
+        status: 'success',
+        data: userData
         })
-      }
-      if (error instanceof Error && 'errors' in error) {
-        return res.status(400).json({
-          status: 'error',
-          message: 'Validation error',
-          errors: error.errors
-        })
-      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
       next(error)
     }
   }
 }
 
 authRouter.post('/register', asyncHandler(AuthController.register))
+authRouter.post('/login', asyncHandler(AuthController.login))
+authRouter.delete('/logout', asyncHandler(AuthController.logout))
 
 export default authRouter
