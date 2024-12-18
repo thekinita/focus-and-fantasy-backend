@@ -1,8 +1,8 @@
 model Log {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
   action    String
   details   Json?
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }

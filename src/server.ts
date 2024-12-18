@@ -1,7 +1,7 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import app from './app'
-import { env } from './env'
+import { env } from './config/env'
 
 const httpServer = createServer(app)
 const PORT = env.PORT
@@ -27,5 +27,5 @@ io.on('connection', (socket) => {
 })
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`[server] server running on http://localhost:${PORT}`)
 })

@@ -1,12 +1,39 @@
 model Task {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  isComplite  Boolean   @default(false)
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  dueDate     DateTime? @default(now())
-  sessions    Session[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           Int       @id @default(autoincrement())
+  title        String
+  description  String?
+  isComplite   Boolean   @default(false)
+  dueDate      DateTime? @default(now())
+  isPin        Boolean
+  files        Json
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  taskTagId    Int
+  taskListId   Int
+  parentTaskId Int?
+  userId       Int
+  sessions     Session[]
+  parentTask   Task?     @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
+  subtasks     Task[]    @relation("TaskHierarchy")
+  taskList     TaskList  @relation(fields: [taskListId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
+  tags         TaskTag[]
+}
+
+model TaskList {
+  id        Int          @id @default(autoincrement())
+  view      TaskListView
+  isArchive Boolean
+  tasks     Task[]
+}
+
+model TaskTag {
+  id     Int   @id @default(autoincrement())
+  taskId Int?
+  Task   Task? @relation(fields: [taskId], references: [id])
+}
+
+enum TaskListView {
+  LIST
+  KANBAN
 }

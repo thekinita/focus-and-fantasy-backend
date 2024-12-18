@@ -1,38 +1,63 @@
 model User {
-  id        Int         @id @default(autoincrement())
-  username  String      @unique
-  email     String      @unique
+  id        Int             @id @default(autoincrement())
+  username  String          @unique
+  email     String          @unique
   password  String
-  createdAt DateTime    @default(now())
+  createdAt DateTime        @default(now())
   gender    Gender
-  role      Role
-  stats     Json?
   settings  Json?
-  inventory Inventory[]
-  tasks     Task[]
+  isAdmin   Boolean         @default(false)
   habits    Habit[]
-  sessions  Session[]
+  inventory InventoryItem[]
   logs      Log[]
+  sessions  Session[]
+  tasks     Task[]
+  token     Token[]
+  stats     UserStats[]
 }
 
 model Item {
-  id          Int          @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   name        String
   description String?
   category    ItemCategory
   price       Int
   attributes  Json?
-  inventory   Inventory[]
+  collection  ItemCollection
+  inventory   InventoryItem[]
 }
 
-model Inventory {
+model InventoryItem {
   id         Int      @id @default(autoincrement())
   userId     Int
-  user       User     @relation(fields: [userId], references: [id])
   itemId     Int
-  item       Item     @relation(fields: [itemId], references: [id])
   quantity   Int      @default(1)
+  isEquiped  Boolean  @default(false)
   acquiredAt DateTime @default(now())
+  item       Item     @relation(fields: [itemId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model UserStats {
+  id         Int  @id @default(autoincrement())
+  userId     Int
+  level      Int  @default(1)
+  experience Int  @default(0)
+  gold       Int  @default(0)
+  health     Int  @default(100)
+  mana       Int  @default(100)
+  energy     Int  @default(0)
+  damage     Int  @default(10)
+  guard      Int  @default(10)
+  User       User @relation(fields: [userId], references: [id])
+}
+
+model Token {
+  id           Int      @id @default(autoincrement())
+  userId       Int?
+  refreshToken String   @unique
+  updatedAt    DateTime @updatedAt
+  User         User?    @relation(fields: [userId], references: [id])
 }
 
 enum Gender {
@@ -40,26 +65,21 @@ enum Gender {
   FEMALE
 }
 
-enum Role {
-  WARRIOR
-  ARCHER
-  THIEF
-  MAGE
-}
-
 enum ItemCategory {
   SWORD
   BOW
   DAGGER
   STICK
-
   HAT
   ARMOR
   PANTS
   BOOTS
-
   FOOD
   DRINK
-
   POTION
+}
+
+enum ItemCollection {
+  DEFAULT
+  BEGINNER
 }
