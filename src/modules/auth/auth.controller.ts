@@ -45,10 +45,29 @@ class AuthController {
       next(error)
     }
   }
+
+  static async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { refreshToken } = req.cookies
+      const userData = await AuthService.refresh(refreshToken)
+      res.cookie('refreshToken', userData.refreshToken, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true
+      })
+
+      res.status(200).json({
+        status: 'success',
+        data: userData
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 authRouter.post('/register', asyncHandler(AuthController.register))
 authRouter.post('/login', asyncHandler(AuthController.login))
 authRouter.delete('/logout', asyncHandler(AuthController.logout))
+authRouter.post('/refresh', asyncHandler(AuthController.refresh))
 
 export default authRouter

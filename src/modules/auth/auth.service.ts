@@ -9,6 +9,7 @@ import getUserThroughVerify from './utils/get-user-through-verify'
 import { ApiError } from '../../exceptions/api-error'
 import { User } from '../users/users.entity'
 import prisma from '../../config/prisma'
+import getUserIdByToken from './utils/get-user-id-by-token'
 
 export default class AuthService {
   static async register(userData: CreateUserDto): Promise<UserResponseDto> {
@@ -45,8 +46,7 @@ export default class AuthService {
       await TokenService.saveToken(user.id, tokens.refreshToken)
       return {
         ...UserMapper.entityToResponseDto(user as User),
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
+        ...tokens
       }
     }
     throw ApiError.Unauthorized('Invalid credentials')
@@ -56,5 +56,18 @@ export default class AuthService {
     return await prisma.token.delete({
       where: { refreshToken }
     })
+  }
+
+  static async refresh(refreshToken: string) {
+    const userId = await getUserIdByToken(refreshToken)
+    const user = await prisma.user.findUnique({ where: { id: userId } })
+
+    const tokens = TokenService.generateTokens(userId)
+    await TokenService.saveToken(userId, tokens.refreshToken)
+
+    return {
+      ...UserMapper.entityToResponseDto(user as User),
+      ...tokens
+    }
   }
 }
