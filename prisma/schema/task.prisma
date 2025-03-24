@@ -1,36 +1,53 @@
 model Task {
-  id           Int       @id @default(autoincrement())
+  id           Int               @id @default(autoincrement())
   title        String
   description  String?
-  isComplite   Boolean   @default(false)
-  dueDate      DateTime? @default(now())
-  isPin        Boolean
-  files        Json
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  taskTagId    Int
-  taskListId   Int
-  parentTaskId Int?
-  userId       Int
+  isComplite   Boolean           @default(false)
+  dueDate      DateTime?         @default(now())
+  isPin        Boolean           @default(false)
+  files        Json?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
   sessions     Session[]
-  parentTask   Task?     @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
-  subtasks     Task[]    @relation("TaskHierarchy")
-  taskList     TaskList  @relation(fields: [taskListId], references: [id])
-  user         User      @relation(fields: [userId], references: [id])
-  tags         TaskTag[]
+  tags         TaskTag[]         @relation("TaskToTag")
+  parentTaskId Int?
+  parentTask   Task?             @relation("TaskHierarchy", fields: [parentTaskId], references: [id])
+  subtasks     Task[]            @relation("TaskHierarchy")
+  taskListId   Int
+  taskList     TaskList          @relation(fields: [taskListId], references: [id])
+  column       ColumnOfTaskList? @relation(fields: [columnId], references: [id])
+  columnId     Int?
+  userId       Int
+  user         User              @relation(fields: [userId], references: [id])
 }
 
 model TaskList {
-  id        Int          @id @default(autoincrement())
-  view      TaskListView
-  isArchive Boolean
+  id        Int                @id @default(autoincrement())
+  name      String
+  icon      String
+  user      User               @relation(fields: [userId], references: [id])
+  userId    Int
+  view      TaskListView       @default(LIST)
+  isArchive Boolean            @default(false)
   tasks     Task[]
+  columns   ColumnOfTaskList[]
+}
+
+model ColumnOfTaskList {
+  id         Int      @id @default(autoincrement())
+  title      String
+  position   Int
+  taskListId Int
+  taskList   TaskList @relation(fields: [taskListId], references: [id])
+  tasks      Task[]
 }
 
 model TaskTag {
-  id     Int   @id @default(autoincrement())
-  taskId Int?
-  Task   Task? @relation(fields: [taskId], references: [id])
+  id     Int    @id @default(autoincrement())
+  name   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  tasks  Task[] @relation("TaskToTag")
 }
 
 enum TaskListView {
