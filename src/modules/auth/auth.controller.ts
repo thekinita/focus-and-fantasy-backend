@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express'
 import AuthService from './auth.service'
 import { CreateUserDto } from './auth.dto'
 import { RegisterSchema } from './auth.validation'
-import { asyncHandler } from './utils/async-handler'
+import { asyncHandler } from '../../exceptions/async-handler'
 
 const authRouter = Router()
 
